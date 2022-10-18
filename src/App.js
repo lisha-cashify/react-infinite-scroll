@@ -1,23 +1,37 @@
-import logo from './logo.svg';
+import { useCallback, useEffect, useState } from 'react';
+import { Virtuoso } from 'react-virtuoso';
 import './App.css';
 
 function App() {
+
+  const ACCSESS_KEY = 'ndqgJs6l0qpQsJ7Y_rMFiN93QcviYFOqAg1Difbmxi8'
+  const BASE_URL = `https://api.unsplash.com/photos/random/?client_id=${ACCSESS_KEY}&count=5`
+
+  const [photos, setPhotos] = useState([])
+
+  const getPhotos = useCallback(async () => {
+    const response = await fetch(BASE_URL)
+    const data = await response.json()
+    setPhotos((prevState)=>[...prevState, ...data])
+  }, [setPhotos])
+
+  useEffect(() => {
+    getPhotos().catch(console.error)
+  }, [getPhotos])
+
+
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div style={{width: "100vw", height: "90vh", textAlign: "center"}}>
+      <h1>React Inifinite Scroll Virtuoso</h1>
+      <Virtuoso
+        data={photos}
+        endReached={getPhotos}
+        overscan={200}
+        itemContent={(index, photo)=>{
+          return <img key={index} src={photo.urls.small} alt={`Photo ${index}`} />
+        }}
+      />
     </div>
   );
 }
