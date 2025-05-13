@@ -11,11 +11,11 @@ function App() {
     const [photos, setPhotos] = useState([]);
 
     const getPhotos = useCallback(async () => {
+
         const response = await fetch(BASE_URL);
         const data = await response.json();
         setPhotos((prevState) => [...prevState, ...data]);
     }, [setPhotos]);
-
     const getOlderPhotos = useCallback(async () => {
 
         const response = await fetch(BASE_URL);
